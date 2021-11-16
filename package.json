@@ -1,0 +1,41 @@
+{
+  "name": "egrn-nosql-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/miketogo/egrn-nosql-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/miketogo/egrn-nosql-api/issues"
+  },
+  "homepage": "https://github.com/miketogo/egrn-nosql-api#readme",
+  "dependencies": {
+    "celebrate": "^15.0.0",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "express-winston": "^4.2.0",
+    "helmet": "^4.6.0",
+    "jsonwebtoken": "^8.5.1",
+    "moment-timezone": "^0.5.33",
+    "mongoose": "^6.0.10",
+    "node-fetch": "^3.0.0",
+    "node-telegram-bot-api": "^0.54.0",
+    "nodemailer": "^6.7.0",
+    "validator": "^13.6.0",
+    "voucher-code-generator": "^1.1.1",
+    "winston": "^3.3.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.13"
+  }
+}
