@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>Hello world!</title>
+  <style type="text/css">
+    svg {
+      width: 120%;
+      height: 120px;
+      margin: 0 0 0 -10%;
+    }
+
+    div {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      -webkit-box-pack: center;
+      -ms-flex-pack: center;
+      justify-content: center;
+    }
+
+    p {
+      font-family: Arial, Helvetica, sans-serif;
+      text-align: left;
+      font-size: 10px;
+      line-height: 110%;
+      max-width: 240px;
+      max-height: 35px;
+      overflow: hidden;
+      word-wrap: break-word;
+    }
+  </style>
+</head>
+
+<body>
+  <p>{{this.name}}</p>
+  <p id="textSvg">{{this.svg}}</p>
+  <div id="barcodeContainer">
+
+  </div>
+  <script>
+    var text = document.getElementById("textSvg");
+    var svg = text.textContent;
+    text.textContent = ''
+    var barcodeContainer = document.getElementById("barcodeContainer");
+
+    barcodeContainer.innerHTML = svg;
+  </script>
+</body>
+
+</html>

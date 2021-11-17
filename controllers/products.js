@@ -1,5 +1,15 @@
 const moment = require('moment-timezone');
+var JsBarcode = require('jsbarcode');
+const path = require('path');
+var pdf = require("pdf-creator-node");
+var fs = require("fs");
 
+const { DOMImplementation, XMLSerializer } = require('xmldom');
+const xmlSerializer = new XMLSerializer();
+const doc = new DOMImplementation().createDocument('http://www.w3.org/1999/xhtml', 'html', null);
+const svgNode = doc.createElementNS('http://www.w3.org/2000/svg', 'svg');
+
+// Read HTML Template
 
 
 const Product = require('../models/product');
@@ -1665,9 +1675,13 @@ module.exports.getProducts = (req, res, next) => {
 
 
   Product.find()
-  .populate(['category', 'sub_category', 'variations.product_id', 'moduleItems.product_id'])
+    .populate(['category', 'sub_category', 'variations.product_id', 'moduleItems.product_id'])
     .then((products) => {
-      res.status(200).send({ products })
+      let filteredProducts = products.filter((product) => {
+        if (product.isModuleChild || product.isVariationChild) return false
+        else return true
+      })
+      res.status(200).send({ products: filteredProducts })
     })
     .catch((err) => {
       console.log(err)
@@ -1676,6 +1690,70 @@ module.exports.getProducts = (req, res, next) => {
       }
       if (err.name === 'ValidationError') {
         throw new InvalidDataError('Переданы некорректные данные при создании товара');
+      }
+    })
+    .catch(next)
+
+};
+
+
+
+
+
+module.exports.createBarcode = (req, res, next) => {
+  const {
+    product_id
+  } = req.body;
+
+
+  Product.findById(product_id).orFail(() => new Error('NotFound'))
+    // .populate(['category', 'sub_category', 'variations.product_id', 'moduleItems.product_id'])
+    .then((product) => {
+      const certPath = path.join(__dirname, '../html/barcode.html');
+      const outputPath = path.join(__dirname, '../barcodes');
+      var html = fs.readFileSync(certPath, "utf8");
+      var options = {
+        height: "50mm",
+        width: "50mm",
+        orientation: "portrait",
+      };
+
+      JsBarcode(svgNode, product.article, {
+        xmlDocument: doc,
+        fontSize: 10
+      });
+
+      const svgText = xmlSerializer.serializeToString(svgNode);
+      var document = {
+        html: html,
+        data: {
+          name: product.name,
+          svg: svgText,
+        },
+        path: `./barcodes/barcode-${product._id.toString()}.pdf`,
+        type: "",
+      };
+
+
+      pdf.create(document, options)
+        .then((response) => {
+          res.status(200).send({ link: `/api/barcodes/barcode-${product._id.toString()}.pdf` })
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+
+    })
+    .catch((err) => {
+      console.log(err)
+      if (err.code === 11000) {
+        throw new ConflictError('Указанный артикул, уже существует на сервере, он должны быть уникальным');
+      }
+      if (err.name === 'ValidationError') {
+        throw new InvalidDataError('Переданы некорректные данные при создании товара');
+      }
+      if (err.message === 'NotFound') {
+        throw new NotFoundError('Товар не найден');
       }
     })
     .catch(next)

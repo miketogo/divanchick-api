@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 const {
-  create, createVariationChild, createModuleChild, createModuleAndVariationChild, getProducts
+  create, createVariationChild, createModuleChild, createModuleAndVariationChild, getProducts, createBarcode
 } = require('../controllers/products');
 
 router.post('/create', celebrate({
@@ -60,7 +60,13 @@ router.post('/add-module-and-variation-item', celebrate({
   }),
 }), createModuleAndVariationChild);
 
-router.get('/',  getProducts);
+router.get('/', getProducts);
+
+router.get('/get-barcode', celebrate({
+  body: Joi.object().keys({
+    product_id: Joi.string().required(),
+  }),
+}), createBarcode);
 
 
 module.exports = router;
