@@ -63,7 +63,7 @@ router.post('/add-module-and-variation-item', celebrate({
 router.get('/all', getProducts);
 router.get('/forsale', getProductsForSale);
 
-router.get('/get-barcode', celebrate({
+router.post('/get-barcode', celebrate({
   body: Joi.object().keys({
     product_id: Joi.string().required(),
   }),
