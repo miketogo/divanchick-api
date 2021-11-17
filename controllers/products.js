@@ -72,12 +72,14 @@ function productCreate({
   next,
 }) {
   let photosArray
+  const realDate = new Date
+  let timeStamp = moment(realDate.toISOString()).tz("Europe/Moscow").format('x')
   if (photos.length === 0) photosArray = []
   else photosArray = photos
   Product.create({
     article,
     name: name.trim(),
-    link: translit(name.trim().toLowerCase()),
+    link: `${translit(name.trim().toLowerCase())}-${timeStamp}`,
     key_words: name.trim().split(/\s/im),
     manufacturer: manufacturer.trim(),
     category: category_id,
@@ -401,6 +403,8 @@ function variationChildCreate({
   next,
 }) {
   let photosArray
+  const realDate = new Date
+  let timeStamp = moment(realDate.toISOString()).tz("Europe/Moscow").format('x')
   if (photos.length === 0) photosArray = []
   else photosArray = photos
   // console.log({
@@ -431,7 +435,7 @@ function variationChildCreate({
       Product.create({
         article,
         name: name.trim(),
-        link: translit(name.trim().toLowerCase()),
+        link: `${translit(name.trim().toLowerCase())}-${timeStamp}`,
         key_words: name.trim().split(/\s/im),
         manufacturer: manufacturer.trim(),
         category: category_id,
@@ -813,6 +817,8 @@ function moduleChildCreate({
   next,
 }) {
   let photosArray
+  const realDate = new Date
+  let timeStamp = moment(realDate.toISOString()).tz("Europe/Moscow").format('x')
   if (photos.length === 0) photosArray = []
   else photosArray = photos
   // console.log({
@@ -843,7 +849,7 @@ function moduleChildCreate({
       Product.create({
         article,
         name: name.trim(),
-        link: translit(name.trim().toLowerCase()),
+        link: `${translit(name.trim().toLowerCase())}-${timeStamp}`,
         key_words: name.trim().split(/\s/im),
         manufacturer: manufacturer.trim(),
         category: category_id,
@@ -1227,6 +1233,8 @@ function moduleAndVariationChildCreate({
   next,
 }) {
   let photosArray
+  const realDate = new Date
+  let timeStamp = moment(realDate.toISOString()).tz("Europe/Moscow").format('x')
   if (photos.length === 0) photosArray = []
   else photosArray = photos
   // console.log({
@@ -1266,7 +1274,7 @@ function moduleAndVariationChildCreate({
       Product.create({
         article,
         name: name.trim(),
-        link: translit(name.trim().toLowerCase()),
+        link: `${translit(name.trim().toLowerCase())}-${timeStamp}`,
         key_words: name.trim().split(/\s/im),
         manufacturer: manufacturer.trim(),
         category: category_id,
@@ -1697,6 +1705,33 @@ module.exports.getProducts = (req, res, next) => {
 };
 
 
+module.exports.getProductsForSale = (req, res, next) => {
+  const {
+
+  } = req.body;
+
+
+  Product.find()
+    .populate(['category', 'sub_category', 'variations.product_id', 'moduleItems.product_id'])
+    .then((products) => {
+      let filteredProducts = products.filter((product) => {
+        if (product.isModuleChild || product.isVariationChild ||  product.visibleToUsers) return false
+        else return true
+      })
+      res.status(200).send({ products: filteredProducts })
+    })
+    .catch((err) => {
+      console.log(err)
+      if (err.code === 11000) {
+        throw new ConflictError('Указанный артикул, уже существует на сервере, он должны быть уникальным');
+      }
+      if (err.name === 'ValidationError') {
+        throw new InvalidDataError('Переданы некорректные данные при создании товара');
+      }
+    })
+    .catch(next)
+
+};
 
 
 

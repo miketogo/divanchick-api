@@ -90,6 +90,11 @@ const productSchema = new mongoose.Schema({
         required: true,
         default: false,
     },
+    visibleToUsers: {
+        type: Boolean,
+        required: true,
+        default: false,
+    },
     moduleItems: [
         {
             product_id: {
@@ -99,6 +104,16 @@ const productSchema = new mongoose.Schema({
             },
         }
     ],
+    stockBalance: {
+        type: Number,
+        default: 0,
+        required: true,
+    },
+    itemsInReserve: {
+        type: Number,
+        default: 0,
+        required: true,
+    },
     price: {
         type: String,
         default: 'Не указано',

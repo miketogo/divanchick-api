@@ -46,6 +46,7 @@ const CORS_WHITELIST = [
   app.use('/api/uploads', express.static('uploads'));
   app.use('/api/barcodes', express.static('barcodes'));
   app.use('/api/products', require('./routes/products'));
+  app.use('/api/categories', require('./routes/categories'));
 
   // eslint-disable-next-line no-unused-vars
   app.use((req, res) => {
