@@ -44,6 +44,7 @@ const CORS_WHITELIST = [
   app.use(requestLogger);
   // app.use(cors(corsOption));
   app.use('/api/uploads', express.static('uploads'));
+  app.use('/api/photos', express.static('photos'));
   app.use('/api/barcodes', express.static('barcodes'));
   app.use('/api/products', require('./routes/products'));
   app.use('/api/categories', require('./routes/categories'));
