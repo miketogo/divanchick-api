@@ -39,6 +39,12 @@ const corsOption = {
     'http://divanchik-frontend.netlify.app',
     'divanchik-frontend.netlify.app',
     'www.divanchik-frontend.netlify.app',
+    'http://shop-divanchik.ru',
+    'https://shop-divanchik.ru',
+    'https://shop-divanchik.ru',
+    'http://shop-divanchik.ru',
+    'shop-divanchik.ru',
+    'www.shop-divanchik.ru',
   ],
 };
 app.use('*', cors(corsOption));
