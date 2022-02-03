@@ -4,10 +4,18 @@ const bcrypt = require('bcryptjs');
 const AuthError = require('../errors/auth-err');
 // Опишем схему:
 const userSchema = new mongoose.Schema({
-    phone_number: {
+    phoneNumber: {
         type: String,
         required: true,
         unique: true,
+    },
+    formatedPhoneNumber: {
+        type: String,
+        required: true,
+    },
+    phoneNumberForSms:{
+        type: String,
+        required: true,
     },
     user_rights: {
         type: String,
@@ -15,6 +23,14 @@ const userSchema = new mongoose.Schema({
         maxlength: 30,
         default: 'default',
         select: false,
+        required: true,
+    },
+    firstname: {
+        type: String,
+        required: true,
+    },
+    surname: {
+        type: String,
         required: true,
     },
     email: {
@@ -35,6 +51,7 @@ const userSchema = new mongoose.Schema({
     reg_date: {
         type: String,
         required: true,
+        select: false,
     },
     order_history: [{
         order_id: {
@@ -48,31 +65,36 @@ const userSchema = new mongoose.Schema({
     ],
     recent_change: {
         type: String,
+        select: false,
     },
     confirmCode: {
         type: Number,
         required: true,
+        select: false,
     },
     lastCodeUpd: {
         type: String,
         required: true,
+        select: false,
     },
     codeUpdCount: {
         type: Number,
         required: true,
         default: 1,
+        select: false,
     },
     phoneConfirmed: {
         type: Boolean,
         required: true,
         default: false,
+        select: false,
     },
 });
 
 
 
 userSchema.statics.findUserByCredentials = function (phone, password) {
-    return this.findOne({ phone_number: phone }).select('+password')
+    return this.findOne({ phoneNumber: phone }).select('+password').select('+phoneConfirmed')
         .then((user) => {
             if (!user) {
                 return Promise.reject(new Error('Auth'));

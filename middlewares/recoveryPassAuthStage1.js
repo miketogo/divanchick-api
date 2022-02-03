@@ -18,19 +18,17 @@ module.exports = (req, res, next) => {
     try {
       // попытаемся верифицировать токен
       payload = jwt.verify(token, jwtSecretPhrase);
-      if (!payload.mode || payload.mode !== 'auth') {
-        throw new AuthError('Токен не в режиме авторизации');
+      if (!payload.mode || payload.mode !== 'recovery-pass-1') {
+        throw new AuthError('Токен не в режиме восстановления');
       }
 
     } catch (err) {
       // отправим ошибку, если не получилось
       throw new AuthError('Необходима авторизация');
     }
-
     payload = {
       _id: payload._id
     }
-
     req.user = payload; // записываем пейлоуд в объект запроса
 
     next();

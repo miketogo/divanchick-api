@@ -8,6 +8,7 @@ const { create, checkCode, getNewCode, login } = require('./controllers/users');
 const NotFoundError = require('./errors/not-found-err');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const auth = require('./middlewares/auth');
+const checkCodeAuth = require('./middlewares/checkCodeAuth')
 
 require('dotenv').config();
 console.log(process.env.NODE_ENV);
@@ -44,28 +45,7 @@ mongoose.connect('mongodb://localhost:27017/divanchick', {
 app.use(express.json());
 app.use(requestLogger);
 
-app.post('/api/signup', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().min(3).required(),
-    password: Joi.string().min(8).required(),
-    firstname: Joi.string().min(1).required(),
-    phone_number: Joi.string().min(11).required(),
-  }),
-}), create);
-app.post('/api/signup-code', celebrate({
-  body: Joi.object().keys({
-    code: Joi.string().min(4).max(4).required(),
-  }),
-}), auth, checkCode);
 
-app.get('/api/signup-new-code', auth, getNewCode);
-
-app.post('/api/signin', celebrate({
-  body: Joi.object().keys({
-    phone_number: Joi.string().min(11).required(),
-    password: Joi.string().min(8).required(),
-  })
-}), login);
 
 // app.use(cors(corsOption));
 app.use('/api/uploads', express.static('uploads'));
@@ -73,6 +53,7 @@ app.use('/api/photos', express.static('photos'));
 app.use('/api/barcodes', express.static('barcodes'));
 app.use('/api/products', require('./routes/products'));
 app.use('/api/categories', require('./routes/categories'));
+app.use('/api/users', require('./routes/users'));
 
 // eslint-disable-next-line no-unused-vars
 app.use((req, res) => {
