@@ -59,7 +59,7 @@ module.exports.create = (req, res, next) => {
                         else return false
                     })
                     console.log(filterUsers)
-                    if (filterUsers.length === 0 && filterUsers[0].phoneConfirmed) {
+                    if (filterUsers.length !== 0 && filterUsers[0].phoneConfirmed) {
                         console.log('sdsdds')
                         throw new ConflictError('Телефон уже подтвержден');
                     }
