@@ -33,6 +33,10 @@ const corsOption = {
     'https://localhost:3000',
     'https://www.localhost:3000',
     'http://www.localhost:3000',
+    'http://divanchik-frontend.netlify.app',
+    'https://divanchik-frontend.netlify.app',
+    'https://divanchik-frontend.netlify.app',
+    'http://divanchik-frontend.netlify.app',
   ],
 };
 app.use('*', cors(corsOption));
