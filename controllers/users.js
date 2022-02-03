@@ -212,7 +212,7 @@ module.exports.getNewCode = (req, res, next) => {
 
     const nowDate = new Date
     let dateMark = moment(nowDate.toISOString()).tz("Europe/Moscow").format('x')
-    let code = Math.floor(Math.random() * 10000)
+    let code = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
 
 
     User.findById(req.user._id).select('+phoneConfirmed').select('+codeUpdCount').select('+lastCodeUpd').orFail(() => new Error('NotFound'))
@@ -334,7 +334,7 @@ module.exports.recoveryPassStage1 = (req, res, next) => {
         console.log(data);
     }
 
-    let code = Math.floor(Math.random() * 10000)
+    let code = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
 
     const { phone_number } = req.body;
 
@@ -425,7 +425,7 @@ module.exports.getNewCodeRecovery = (req, res, next) => {
 
     const nowDate = new Date
     let dateMark = moment(nowDate.toISOString()).tz("Europe/Moscow").format('x')
-    let code = Math.floor(Math.random() * 10000)
+    let code = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
 
 
     User.findById(req.user._id).select('+phoneConfirmed').select('+codeUpdCount').select('+lastCodeUpd').orFail(() => new Error('NotFound'))
