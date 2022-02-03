@@ -59,83 +59,84 @@ module.exports.create = (req, res, next) => {
                         else return false
                     })
                     console.log(filterUsers)
-                    if (filterUsers[0].phoneConfirmed) {
+                    if (filterUsers.length === 0 && filterUsers[0].phoneConfirmed) {
                         console.log('sdsdds')
                         throw new ConflictError('Телефон уже подтвержден');
-                    } else {
-                        if (filterUsers.length === 0) {
-                            User.create({
-                                firstname,
-                                surname,
-                                email,
-                                password: hash,
-                                phoneNumberForSms: phone,
-                                formatedPhoneNumber: phone_number,
-                                phoneNumber: phone_number.match(/\d{1,}/g).join(""),
-                                reg_date: date,
-                                confirmCode: code,
-                                lastCodeUpd: dateMark,
-                                recent_change: dateMark,
-                            })
-                                .then((user) => {
-
-                                    sendSMS({
-                                        phone,
-                                        code
-                                    })
-                                    const token = jwt.sign({ _id: user._id, mode: "check-code" }, jwtSecretPhrase, { expiresIn: '7d' });
-                                    res.status(200).send({ token })
-                                })
-                                .catch((err) => {
-                                    console.log(err)
-                                    if (err.code === 11000) {
-                                        throw new ConflictError('При регистрации указан телефон, который уже существует на сервере');
-                                    }
-                                    if (err.name === 'ValidationError') {
-                                        throw new InvalidDataError('Переданы некорректные данные при создании пользователя');
-                                    }
-                                })
-                                .catch(next)
-                        } else {
-
-                            User.findByIdAndRemove(filterUsers[0]._id)
-                                .then(() => {
-                                    User.create({
-                                        firstname,
-                                        surname,
-                                        email,
-                                        password: hash,
-                                        phoneNumberForSms: phone,
-                                        formatedPhoneNumber: phone_number,
-                                        phoneNumber: phone_number.match(/\d{1,}/g).join(""),
-                                        reg_date: date,
-                                        confirmCode: code,
-                                        lastCodeUpd: dateMark,
-                                        recent_change: dateMark,
-                                    })
-                                        .then((user) => {
-
-                                            sendSMS({
-                                                phone,
-                                                code
-                                            })
-                                            const token = jwt.sign({ _id: user._id, mode: "check-code" }, jwtSecretPhrase, { expiresIn: '30d' });
-                                            res.status(200).send({ token })
-                                        })
-                                        .catch((err) => {
-                                            console.log(err)
-                                            if (err.code === 11000) {
-                                                throw new ConflictError('При регистрации указан телефон, который уже существует на сервере');
-                                            }
-                                            if (err.name === 'ValidationError') {
-                                                throw new InvalidDataError('Переданы некорректные данные при создании пользователя');
-                                            }
-                                        })
-                                        .catch(next)
-                                })
-                                .catch(next)
-                        }
                     }
+
+                    if (filterUsers.length === 0) {
+                        User.create({
+                            firstname,
+                            surname,
+                            email,
+                            password: hash,
+                            phoneNumberForSms: phone,
+                            formatedPhoneNumber: phone_number,
+                            phoneNumber: phone_number.match(/\d{1,}/g).join(""),
+                            reg_date: date,
+                            confirmCode: code,
+                            lastCodeUpd: dateMark,
+                            recent_change: dateMark,
+                        })
+                            .then((user) => {
+
+                                sendSMS({
+                                    phone,
+                                    code
+                                })
+                                const token = jwt.sign({ _id: user._id, mode: "check-code" }, jwtSecretPhrase, { expiresIn: '7d' });
+                                res.status(200).send({ token })
+                            })
+                            .catch((err) => {
+                                console.log(err)
+                                if (err.code === 11000) {
+                                    throw new ConflictError('При регистрации указан телефон, который уже существует на сервере');
+                                }
+                                if (err.name === 'ValidationError') {
+                                    throw new InvalidDataError('Переданы некорректные данные при создании пользователя');
+                                }
+                            })
+                            .catch(next)
+                    } else {
+
+                        User.findByIdAndRemove(filterUsers[0]._id)
+                            .then(() => {
+                                User.create({
+                                    firstname,
+                                    surname,
+                                    email,
+                                    password: hash,
+                                    phoneNumberForSms: phone,
+                                    formatedPhoneNumber: phone_number,
+                                    phoneNumber: phone_number.match(/\d{1,}/g).join(""),
+                                    reg_date: date,
+                                    confirmCode: code,
+                                    lastCodeUpd: dateMark,
+                                    recent_change: dateMark,
+                                })
+                                    .then((user) => {
+
+                                        sendSMS({
+                                            phone,
+                                            code
+                                        })
+                                        const token = jwt.sign({ _id: user._id, mode: "check-code" }, jwtSecretPhrase, { expiresIn: '30d' });
+                                        res.status(200).send({ token })
+                                    })
+                                    .catch((err) => {
+                                        console.log(err)
+                                        if (err.code === 11000) {
+                                            throw new ConflictError('При регистрации указан телефон, который уже существует на сервере');
+                                        }
+                                        if (err.name === 'ValidationError') {
+                                            throw new InvalidDataError('Переданы некорректные данные при создании пользователя');
+                                        }
+                                    })
+                                    .catch(next)
+                            })
+                            .catch(next)
+                    }
+
 
 
                 })
